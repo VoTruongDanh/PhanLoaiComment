@@ -1,0 +1,130 @@
+{
+  "dataset_info": {
+    "file": "dataset_tiktok-comments-637video-scraper_2026-01-15.csv",
+    "total_comments": 4000,
+    "analysis_date": "2026-01-16 00:31:14"
+  },
+  "results": {
+    "basic_info": {
+      "total_comments": 4000,
+      "total_columns": 10,
+      "missing_data": {
+        "text": 27,
+        "diggCount": 0,
+        "replyCommentTotal": 0,
+        "createTimeISO": 0,
+        "uniqueId": 0,
+        "videoWebUrl": 0,
+        "uid": 0,
+        "cid": 0,
+        "avatarThumbnail": 0,
+        "trust": 0
+      }
+    },
+    "sentiment": {
+      "sentiment_counts": {
+        "-1": 1307,
+        "0": 689,
+        "1": 2004
+      },
+      "positive_ratio": 0.501,
+      "negative_ratio": 0.32675
+    },
+    "engagement": {
+      "Likes": {
+        "total": 81945.0,
+        "mean": 20.48625,
+        "median": 1.0,
+        "min": 0.0,
+        "max": 8101.0,
+        "std": 249.7421692440269
+      },
+      "Replies": {
+        "total": 5658.0,
+        "mean": 1.4145,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 263.0,
+        "std": 7.1179601072935395
+      }
+    },
+    "time": {
+      "date_range": {
+        "start": "2021-02-25 13:24:16+00:00",
+        "end": "2026-01-15 09:58:04+00:00",
+        "days": 1784
+      },
+      "daily_stats": {
+        "mean": 6.134969325153374,
+        "min": 1,
+        "max": 125
+      }
+    },
+    "users": {
+      "total_users": 3896,
+      "avg_comments_per_user": 1.0266940451745379,
+      "top_users": {
+        "harrynguyen1104": 5,
+        "abalony.abalony.bn": 5,
+        "minh.vng.vng3": 3,
+        "05701lnh": 3,
+        "yada_da915": 3,
+        "user25371492": 3,
+        "michellenguyen391": 3,
+        "sallythienthao_0409": 3,
+        "nhungnguyn945": 3,
+        "th.y7208": 3
+      }
+    },
+    "videos": {
+      "total_videos": 209,
+      "avg_comments_per_video": 19.138755980861244,
+      "top_videos": {
+        "https://www.tiktok.com/@phuclong1905/video/7258252678982143250": 82,
+        "https://www.tiktok.com/@thoonglee.com/video/7408385628070546695": 81,
+        "https://www.tiktok.com/@thamcauftv/video/7182390437645225243": 77,
+        "https://www.tiktok.com/@mclongb/video/7582802352038530324": 72,
+        "https://www.tiktok.com/@_phucluong08/video/7543516423965003026": 71,
+        "https://www.tiktok.com/@trasuaeasylife/video/7472376366940425480": 71,
+        "https://www.tiktok.com/@nghiendanang_silktravel/video/7491308310335917319": 70,
+        "https://www.tiktok.com/@mukahaman/video/7437797925457087764": 68,
+        "https://www.tiktok.com/@phuc.lna1177/video/7422614386549804295": 67,
+        "https://www.tiktok.com/@ng.philong/video/7486122930766679304": 67
+      }
+    },
+    "text": {
+      "text_length_stats": {
+        "mean": 31.68625,
+        "median": 22.0,
+        "min": 1,
+        "max": 914
+      }
+    },
+    "correlation": {
+      "trust": {
+        "trust": 1.0,
+        "diggCount": 0.0008219046867200809,
+        "replyCommentTotal": -0.04452610929575857,
+        "text_length": -0.19722041554100161
+      },
+      "diggCount": {
+        "trust": 0.0008219046867200809,
+        "diggCount": 1.0,
+        "replyCommentTotal": 0.37751633424036607,
+        "text_length": 0.03144953991936508
+      },
+      "replyCommentTotal": {
+        "trust": -0.04452610929575857,
+        "diggCount": 0.37751633424036607,
+        "replyCommentTotal": 1.0,
+        "text_length": 0.09423008392352762
+      },
+      "text_length": {
+        "trust": -0.19722041554100161,
+        "diggCount": 0.03144953991936508,
+        "replyCommentTotal": 0.09423008392352762,
+        "text_length": 1.0
+      }
+    }
+  }
+}
