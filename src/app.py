@@ -523,19 +523,23 @@ st.markdown("""
         left: 100%;
     }
     
-    /* Hide Tabs Buttons - Keep content visible but allow clicking */
+    /* Hide Tabs Buttons - Make them invisible but clickable */
     .stTabs [data-baseweb="tab-list"] {
-        position: absolute !important;
-        left: -9999px !important;
-        width: 1px !important;
+        position: fixed !important;
+        top: -100px !important;
+        left: 0 !important;
+        width: 100% !important;
         height: 1px !important;
-        overflow: hidden !important;
         opacity: 0 !important;
         pointer-events: auto !important;
+        z-index: 100000 !important;
     }
     
     .stTabs [data-baseweb="tab"] {
         pointer-events: auto !important;
+        opacity: 0 !important;
+        height: 1px !important;
+        overflow: hidden !important;
     }
     
     /* Show tab content */
@@ -847,9 +851,9 @@ st.markdown("""
                     <span>Sentiment Analysis</span>
                 </div>
                 <div class="nav-links">
-                    <a href="#" class="nav-link">Upload & Results</a>
-                    <a href="#" class="nav-link">Analytics</a>
-                    <a href="#" class="nav-link">Settings</a>
+                    <a href="#tab-upload-results" class="nav-link">Upload & Results</a>
+                    <a href="#tab-analytics" class="nav-link">Analytics</a>
+                    <a href="#tab-settings" class="nav-link">Settings</a>
                 </div>
                 <a href="https://github.com" target="_blank" class="nav-github">
                     <svg viewBox="0 0 24 24" fill="currentColor">
@@ -955,7 +959,7 @@ st.markdown("""
             }
         }
         
-        // Handle navigation link clicks
+        // Handle navigation link clicks - Use query params
         function setupNavLinks() {
             // Remove old event listeners by cloning
             const navLinks = document.querySelectorAll('.nav-link');
@@ -967,58 +971,69 @@ st.markdown("""
                 newLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    const linkText = this.textContent.trim();
                     
-                    // Map nav link text to tab index (0 = Introduction, 1 = Upload & Results, etc.)
-                    const tabMap = {
-                        'Upload & Results': 1,
-                        'Analytics': 2,
-                        'Settings': 3
-                    };
+                    const href = this.getAttribute('href');
+                    const targetId = href.replace('#', '');
                     
-                    const tabIndex = tabMap[linkText];
-                    if (tabIndex !== undefined) {
-                        // Wait a bit for DOM to be ready
-                        setTimeout(() => {
-                            // Find all tab buttons - try multiple selectors
-                            let tabButtons = document.querySelectorAll('[data-baseweb="tab"]');
-                            
-                            // If not found, try alternative selector
-                            if (!tabButtons || tabButtons.length === 0) {
-                                tabButtons = document.querySelectorAll('button[role="tab"]');
-                            }
-                            
-                            // If still not found, try finding by text content
-                            if (!tabButtons || tabButtons.length === 0) {
-                                const allButtons = document.querySelectorAll('button');
-                                tabButtons = Array.from(allButtons).filter(btn => {
-                                    const text = btn.textContent.trim();
-                                    return text === 'Upload & Results' || text === 'Analytics' || text === 'Settings' || text === 'Introduction';
-                                });
-                            }
-                            
-                            if (tabButtons && tabButtons[tabIndex]) {
-                                // Create and dispatch click event
-                                const clickEvent = new MouseEvent('click', {
-                                    bubbles: true,
-                                    cancelable: true,
-                                    view: window
-                                });
-                                tabButtons[tabIndex].dispatchEvent(clickEvent);
+                    if (targetId) {
+                        // Map ID to tab name and index
+                        const idToTabMap = {
+                            'tab-upload-results': { name: 'Upload & Results', index: 1 },
+                            'tab-analytics': { name: 'Analytics', index: 2 },
+                            'tab-settings': { name: 'Settings', index: 3 }
+                        };
+                        
+                        const tabInfo = idToTabMap[targetId];
+                        
+                        if (tabInfo) {
+                            // First, click the tab button to switch tab
+                            setTimeout(() => {
+                                let tabButtons = document.querySelectorAll('[data-baseweb="tab"]');
+                                if (!tabButtons || tabButtons.length === 0) {
+                                    tabButtons = document.querySelectorAll('button[role="tab"]');
+                                }
                                 
-                                // Also try direct click
-                                tabButtons[tabIndex].click();
-                                
-                                // Force Streamlit rerun by dispatching change event
-                                const changeEvent = new Event('change', { bubbles: true });
-                                tabButtons[tabIndex].dispatchEvent(changeEvent);
-                                
-                                // Scroll to top
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            } else {
-                                console.log('Tab buttons not found, tabIndex:', tabIndex);
-                            }
-                        }, 100);
+                                if (tabButtons && tabButtons.length > tabInfo.index && tabButtons[tabInfo.index]) {
+                                    tabButtons[tabInfo.index].click();
+                                }
+                            }, 50);
+                            
+                            // Then scroll to the target element
+                            setTimeout(() => {
+                                const targetElement = document.getElementById(targetId);
+                                if (targetElement) {
+                                    const navBar = document.querySelector('.nav-bar');
+                                    const offset = navBar ? navBar.offsetHeight + 30 : 100;
+                                    
+                                    // Get element position
+                                    const rect = targetElement.getBoundingClientRect();
+                                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                                    const targetPosition = rect.top + scrollTop - offset;
+                                    
+                                    window.scrollTo({
+                                        top: targetPosition,
+                                        behavior: 'smooth'
+                                    });
+                                } else {
+                                    // Retry after a bit more time
+                                    setTimeout(() => {
+                                        const targetElement = document.getElementById(targetId);
+                                        if (targetElement) {
+                                            const navBar = document.querySelector('.nav-bar');
+                                            const offset = navBar ? navBar.offsetHeight + 30 : 100;
+                                            const rect = targetElement.getBoundingClientRect();
+                                            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                                            const targetPosition = rect.top + scrollTop - offset;
+                                            
+                                            window.scrollTo({
+                                                top: targetPosition,
+                                                behavior: 'smooth'
+                                            });
+                                        }
+                                    }, 500);
+                                }
+                            }, 300);
+                        }
                     }
                 });
             });
@@ -1034,22 +1049,35 @@ st.markdown("""
                 newLogo.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
+                    
+                    // Click Introduction tab
                     setTimeout(() => {
                         let tabButtons = document.querySelectorAll('[data-baseweb="tab"]');
                         if (!tabButtons || tabButtons.length === 0) {
                             tabButtons = document.querySelectorAll('button[role="tab"]');
                         }
                         if (tabButtons && tabButtons[0]) {
-                            const clickEvent = new MouseEvent('click', {
-                                bubbles: true,
-                                cancelable: true,
-                                view: window
-                            });
-                            tabButtons[0].dispatchEvent(clickEvent);
                             tabButtons[0].click();
+                        }
+                    }, 50);
+                    
+                    // Scroll to Introduction section
+                    setTimeout(() => {
+                        const targetElement = document.getElementById('tab-introduction');
+                        if (targetElement) {
+                            const navBar = document.querySelector('.nav-bar');
+                            const offset = navBar ? navBar.offsetHeight + 20 : 100;
+                            const elementPosition = targetElement.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - offset;
+                            
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                            });
+                        } else {
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                         }
-                    }, 100);
+                    }, 300);
                 });
             }
         }
@@ -1093,9 +1121,9 @@ st.markdown("""
         <span>Sentiment Analysis</span>
     </div>
     <div class="nav-links">
-        <a href="#" class="nav-link">Upload & Results</a>
-        <a href="#" class="nav-link">Analytics</a>
-        <a href="#" class="nav-link">Settings</a>
+        <a href="#tab-upload-results" class="nav-link">Upload & Results</a>
+        <a href="#tab-analytics" class="nav-link">Analytics</a>
+        <a href="#tab-settings" class="nav-link">Settings</a>
     </div>
     <a href="https://github.com" target="_blank" class="nav-github">
         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -1133,12 +1161,28 @@ if 'text_column' not in st.session_state:
     st.session_state.text_column = 'text'
 if 'trust_column' not in st.session_state:
     st.session_state.trust_column = 'trust'
+if 'current_tab' not in st.session_state:
+    st.session_state.current_tab = 'Introduction'
+
+# Get tab from query params or session state
+query_params = st.query_params
+if 'tab' in query_params:
+    st.session_state.current_tab = query_params['tab']
 
 # Tabs - Hidden, controlled by navigation bar
 tab_intro, tab1, tab2, tab3 = st.tabs(["Introduction", "Upload & Results", "Analytics", "Settings"])
 
+# Set active tab based on session state
+tab_map = {
+    'Introduction': 0,
+    'Upload & Results': 1,
+    'Analytics': 2,
+    'Settings': 3
+}
+
 # Tab Introduction - Default page
 with tab_intro:
+    st.markdown('<div id="tab-introduction"></div>', unsafe_allow_html=True)
     st.markdown("""
     <div style="text-align: center; padding: 3rem 2rem;">
         <div style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">
@@ -1219,6 +1263,7 @@ with tab_intro:
 
 # Tab 1: Upload & Results (2 cột 3/7)
 with tab1:
+    st.markdown('<div id="tab-upload-results"></div>', unsafe_allow_html=True)
     col_upload, col_results = st.columns([3, 7])
     
     # Cột Upload (30%)
@@ -1432,6 +1477,7 @@ with tab1:
 
 # Tab 2: Analytics
 with tab2:
+    st.markdown('<div id="tab-analytics"></div>', unsafe_allow_html=True)
     if st.session_state.results_df is not None:
         df = st.session_state.results_df
         
@@ -1551,6 +1597,7 @@ with tab2:
 
 # Tab 3: Settings
 with tab3:
+    st.markdown('<div id="tab-settings"></div>', unsafe_allow_html=True)
     st.markdown("### Cài Đặt Cột Dữ Liệu")
     
     col1, col2 = st.columns(2)
