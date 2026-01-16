@@ -1,5 +1,5 @@
 """
-Web App để phân tích sentiment cho comments TikTok
+Web App để phân tích sentiment cho comments 
 UI được thiết kế theo phong cách Antigravity Kit - Experimental & Futuristic
 """
 
@@ -21,7 +21,7 @@ except:
 
 # Cấu hình trang
 st.set_page_config(
-    page_title="Sentiment Analysis | TikTok Comments",
+    page_title="Sentiment Analysis |  Comments",
     page_icon="💬",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -483,21 +483,23 @@ st.markdown("""
     
     /* Buttons - Neon Experimental */
     .stButton>button {
-        font-family: 'Inter', sans-serif;
-        background: transparent;
-        color: var(--neon-cyan);
-        border: 1px solid var(--border-neon);
-        border-radius: 8px;
-        padding: 0.875rem 2rem;
-        font-weight: 500;
-        font-size: 0.9375rem;
-        letter-spacing: 0.5px;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: var(--glow-soft);
-        position: relative;
-        overflow: hidden;
-        background: var(--bg-glass);
-        backdrop-filter: blur(10px);
+        font-family: 'Inter', sans-serif !important;
+        background: transparent !important;
+        color: var(--neon-cyan) !important;
+        border: 1px solid var(--border-neon) !important;
+        border-radius: 10px !important;
+        padding: 0.875rem 2rem !important;
+        font-weight: 500 !important;
+        font-size: 0.9375rem !important;
+        letter-spacing: 0.5px !important;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: var(--glow-soft) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        background: var(--bg-glass) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        width: 100% !important;
     }
     
     .stButton>button::before {
@@ -513,14 +515,31 @@ st.markdown("""
     }
     
     .stButton>button:hover {
-        color: var(--text-primary);
-        border-color: var(--neon-cyan);
-        transform: translateY(-2px);
-        box-shadow: var(--glow-cyan), var(--shadow-float);
+        color: var(--text-primary) !important;
+        border-color: var(--neon-cyan) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: var(--glow-cyan), var(--shadow-float) !important;
+        background: var(--bg-hover) !important;
     }
     
     .stButton>button:hover::before {
         left: 100%;
+    }
+    
+    /* Primary button - Gradient */
+    .stButton>button[kind="primary"] {
+        background: var(--gradient-cyan) !important;
+        color: var(--bg-deep) !important;
+        border: none !important;
+        font-weight: 600 !important;
+        box-shadow: var(--glow-cyan) !important;
+    }
+    
+    .stButton>button[kind="primary"]:hover {
+        background: var(--gradient-purple) !important;
+        color: var(--text-primary) !important;
+        box-shadow: var(--glow-purple) !important;
+        transform: translateY(-3px) scale(1.02) !important;
     }
     
     /* Hide Tabs Buttons - Make them invisible but clickable */
@@ -579,100 +598,669 @@ st.markdown("""
         color: var(--text-primary);
     }
     
-    /* File Uploader - Floating */
+    /* File Uploader - Floating Glass */
     .uploadedFile {
-        border: 2px dashed var(--border-subtle);
-        border-radius: 12px;
-        padding: 3rem;
-        background: var(--bg-glass);
-        backdrop-filter: blur(10px);
-        transition: all 0.4s ease;
-        position: relative;
+        border: 2px dashed var(--border-subtle) !important;
+        border-radius: 16px !important;
+        padding: 3rem 2rem !important;
+        background: var(--bg-glass) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        box-shadow: var(--shadow-float) !important;
+        overflow: hidden !important;
+    }
+    
+    .uploadedFile::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--gradient-cyan);
+        opacity: 0.05;
+        transition: left 0.5s ease;
     }
     
     .uploadedFile:hover {
-        border-color: var(--border-neon);
-        background: var(--bg-hover);
-        box-shadow: var(--glow-soft);
+        border-color: var(--neon-cyan) !important;
+        background: var(--bg-hover) !important;
+        box-shadow: var(--glow-cyan), var(--shadow-float) !important;
+        transform: translateY(-4px) !important;
+    }
+    
+    .uploadedFile:hover::before {
+        left: 100%;
+    }
+    
+    .uploadedFile label {
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 0.9375rem !important;
+        letter-spacing: 0.3px !important;
+    }
+    
+    .uploadedFile p {
+        color: var(--text-secondary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* File uploader button */
+    .stFileUploader>div>div>button {
+        background: transparent !important;
+        border: 1px solid var(--border-neon) !important;
+        border-radius: 10px !important;
+        color: var(--neon-cyan) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 500 !important;
+        padding: 0.75rem 1.5rem !important;
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    .stFileUploader>div>div>button:hover {
+        background: var(--bg-hover) !important;
+        border-color: var(--neon-cyan) !important;
+        color: var(--text-primary) !important;
+        box-shadow: var(--glow-cyan) !important;
+        transform: translateY(-2px) !important;
     }
     
     /* Progress Bar - Neon */
+    .stProgress {
+        background: var(--bg-glass) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 10px !important;
+        padding: 0.5rem !important;
+        border: 1px solid var(--border-subtle) !important;
+        box-shadow: var(--shadow-float) !important;
+    }
+    
     .stProgress > div > div > div {
-        background: var(--gradient-cyan);
-        box-shadow: var(--glow-cyan);
+        background: var(--gradient-cyan) !important;
+        box-shadow: var(--glow-cyan) !important;
+        border-radius: 10px !important;
+        height: 8px !important;
     }
     
-    /* Dataframe - Glass */
+    /* Empty state styling */
+    .element-container:has([data-testid="stEmpty"]) {
+        text-align: center !important;
+        padding: 3rem 2rem !important;
+    }
+    
+    [data-testid="stEmpty"] {
+        color: var(--text-muted) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9375rem !important;
+    }
+    
+    /* Dataframe - Glass Morphism */
     .dataframe {
-        border-radius: 12px;
-        border: 1px solid var(--border-subtle);
-        overflow: hidden;
-        background: var(--bg-glass);
-        backdrop-filter: blur(10px);
+        border-radius: 16px !important;
+        border: 1px solid var(--border-subtle) !important;
+        overflow: hidden !important;
+        background: var(--bg-glass) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: var(--shadow-float) !important;
     }
     
-    /* Inputs - Experimental */
-    .stTextInput>div>div>input,
+    .dataframe thead {
+        background: var(--bg-card) !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    .dataframe thead th {
+        background: var(--bg-card) !important;
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 0.875rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        padding: 1rem !important;
+        border-bottom: 2px solid var(--border-neon) !important;
+    }
+    
+    .dataframe tbody tr {
+        background: transparent !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .dataframe tbody tr:hover {
+        background: var(--bg-hover) !important;
+        box-shadow: 0 0 20px rgba(0, 245, 255, 0.1) !important;
+    }
+    
+    .dataframe tbody td {
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.875rem !important;
+        padding: 0.875rem 1rem !important;
+        border-bottom: 1px solid var(--border-subtle) !important;
+    }
+    
+    /* Streamlit dataframe wrapper */
+    [data-testid="stDataFrame"] {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+        background: var(--bg-glass) !important;
+        backdrop-filter: blur(20px) !important;
+        border: 1px solid var(--border-subtle) !important;
+        box-shadow: var(--shadow-float) !important;
+    }
+    
+    /* Inputs - Experimental Neon */
+    .stTextInput>div>div>input {
+        background: var(--bg-glass) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 10px !important;
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9375rem !important;
+        padding: 0.75rem 1rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: var(--shadow-float) !important;
+    }
+    
+    .stTextInput>div>div>input:focus {
+        border-color: var(--neon-cyan) !important;
+        box-shadow: var(--glow-cyan), var(--shadow-float) !important;
+        outline: none !important;
+        background: var(--bg-hover) !important;
+    }
+    
+    .stTextInput>div>div>input:hover {
+        border-color: var(--border-neon) !important;
+        background: var(--bg-hover) !important;
+    }
+    
+    /* Selectbox - Enhanced Neon Styling */
+    .stSelectbox {
+        position: relative !important;
+    }
+    
     .stSelectbox>div>div {
-        background: var(--bg-glass);
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--border-subtle);
-        border-radius: 8px;
-        color: var(--text-primary);
-        font-family: 'Inter', sans-serif;
+        background: var(--bg-glass) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 10px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: var(--shadow-float) !important;
+        min-height: 48px !important;
+        padding: 0 !important;
     }
     
-    .stTextInput>div>div>input:focus,
-    .stSelectbox>div>div:focus {
-        border-color: var(--border-neon);
-        box-shadow: var(--glow-cyan);
-        outline: none;
+    .stSelectbox>div>div:hover {
+        border-color: var(--border-neon) !important;
+        background: var(--bg-hover) !important;
+        box-shadow: var(--glow-soft) !important;
     }
     
-    /* Messages - Glass Experimental */
-    .stSuccess {
-        background: rgba(57, 255, 20, 0.1);
-        backdrop-filter: blur(10px);
-        border-left: 2px solid var(--neon-lime);
-        border-radius: 8px;
-        padding: 1rem;
-        color: var(--text-primary);
-        box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+    /* Selectbox value container */
+    [data-baseweb="select"] {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 10px !important;
+        width: 100% !important;
+        min-height: 48px !important;
     }
     
-    .stError {
-        background: rgba(255, 0, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-left: 2px solid var(--neon-pink);
-        border-radius: 8px;
-        padding: 1rem;
-        color: var(--text-primary);
-        box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+    /* Selected value text */
+    [data-baseweb="select"] > div {
+        background: transparent !important;
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9375rem !important;
+        font-weight: 400 !important;
+        padding: 0.75rem 1rem 0.75rem 1rem !important;
+        line-height: 1.5 !important;
     }
     
-    .stInfo {
-        background: rgba(0, 245, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-left: 2px solid var(--neon-cyan);
-        border-radius: 8px;
-        padding: 1rem;
-        color: var(--text-primary);
-        box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+    /* Dropdown arrow button */
+    [data-baseweb="select"] button {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: none !important;
+        border-radius: 8px !important;
+        color: var(--neon-cyan) !important;
+        padding: 0.5rem !important;
+        margin-right: 0.5rem !important;
+        transition: all 0.3s ease !important;
+        min-width: 32px !important;
+        min-height: 32px !important;
     }
     
-    .stWarning {
-        background: rgba(176, 38, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-left: 2px solid var(--neon-purple);
-        border-radius: 8px;
-        padding: 1rem;
-        color: var(--text-primary);
-        box-shadow: 0 0 20px rgba(176, 38, 255, 0.2);
+    [data-baseweb="select"] button:hover {
+        background: var(--bg-hover) !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 0 10px rgba(0, 245, 255, 0.3) !important;
+    }
+    
+    [data-baseweb="select"] button svg {
+        fill: currentColor !important;
+        width: 16px !important;
+        height: 16px !important;
+    }
+    
+    /* Focus state */
+    [data-baseweb="select"][aria-expanded="true"] {
+        border-color: var(--neon-cyan) !important;
+    }
+    
+    [data-baseweb="select"][aria-expanded="true"] ~ div,
+    .stSelectbox>div>div[aria-expanded="true"] {
+        border-color: var(--neon-cyan) !important;
+        box-shadow: var(--glow-cyan), var(--shadow-float) !important;
+        background: var(--bg-hover) !important;
+    }
+    
+    /* Dropdown popover */
+    [data-baseweb="popover"] {
+        background: var(--bg-card) !important;
+        backdrop-filter: blur(30px) !important;
+        -webkit-backdrop-filter: blur(30px) !important;
+        border: 1px solid var(--border-neon) !important;
+        border-radius: 12px !important;
+        box-shadow: var(--glow-cyan), var(--shadow-float) !important;
+        padding: 0.5rem !important;
+        margin-top: 0.25rem !important;
+        z-index: 1000 !important;
+    }
+    
+    /* Dropdown menu */
+    [data-baseweb="menu"] {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+    
+    [data-baseweb="menu"] ul {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    [data-baseweb="menu"] li {
+        background: transparent !important;
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9375rem !important;
+        padding: 0.875rem 1.25rem !important;
+        margin: 0.25rem 0 !important;
+        border-radius: 8px !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
+    }
+    
+    [data-baseweb="menu"] li:hover,
+    [data-baseweb="menu"] li[aria-selected="true"] {
+        background: var(--bg-hover) !important;
+        color: var(--neon-cyan) !important;
+        box-shadow: 0 0 15px rgba(0, 245, 255, 0.2) !important;
+    }
+    
+    [data-baseweb="menu"] li[aria-selected="true"] {
+        background: rgba(0, 245, 255, 0.1) !important;
+        border-left: 2px solid var(--neon-cyan) !important;
+    }
+    
+    /* Additional selectbox overrides */
+    [data-baseweb="select"] > div:first-child {
+        background: transparent !important;
+        padding: 0 !important;
+    }
+    
+    /* Selectbox placeholder */
+    [data-baseweb="select"] [placeholder] {
+        color: var(--text-muted) !important;
+    }
+    
+    /* Override Baseweb default styles */
+    [data-baseweb="base-select"] {
+        background: transparent !important;
+    }
+    
+    /* Ensure selectbox container has proper styling */
+    .stSelectbox [data-baseweb="select"] {
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    /* Focus ring removal */
+    [data-baseweb="select"]:focus,
+    [data-baseweb="select"]:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Better select value display */
+    [data-baseweb="select"] > div > div {
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    /* Ensure dropdown is visible on top */
+    [data-baseweb="layer"] {
+        z-index: 10000 !important;
+    }
+    
+    /* Messages - Glass Experimental Neon */
+    .stSuccess,
+    [data-testid="stSuccess"] {
+        background: rgba(57, 255, 20, 0.08) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(57, 255, 20, 0.3) !important;
+        border-left: 3px solid var(--neon-lime) !important;
+        border-radius: 12px !important;
+        padding: 1.25rem 1.5rem !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 0 30px rgba(57, 255, 20, 0.15), var(--shadow-float) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9375rem !important;
+        line-height: 1.6 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stError,
+    [data-testid="stError"] {
+        background: rgba(255, 0, 255, 0.08) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(255, 0, 255, 0.3) !important;
+        border-left: 3px solid var(--neon-pink) !important;
+        border-radius: 12px !important;
+        padding: 1.25rem 1.5rem !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 0 30px rgba(255, 0, 255, 0.15), var(--shadow-float) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9375rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    .stInfo,
+    [data-testid="stInfo"] {
+        background: rgba(0, 245, 255, 0.08) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(0, 245, 255, 0.3) !important;
+        border-left: 3px solid var(--neon-cyan) !important;
+        border-radius: 12px !important;
+        padding: 1.25rem 1.5rem !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 0 30px rgba(0, 245, 255, 0.15), var(--shadow-float) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9375rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    .stWarning,
+    [data-testid="stWarning"] {
+        background: rgba(176, 38, 255, 0.08) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(176, 38, 255, 0.3) !important;
+        border-left: 3px solid var(--neon-purple) !important;
+        border-radius: 12px !important;
+        padding: 1.25rem 1.5rem !important;
+        color: var(--text-primary) !important;
+        box-shadow: 0 0 30px rgba(176, 38, 255, 0.15), var(--shadow-float) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9375rem !important;
+        line-height: 1.6 !important;
     }
     
     /* Spacing - Generous */
     .element-container {
         margin-bottom: 2rem;
+    }
+    
+    /* Section Headers - Gradient Text */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Space Grotesk', sans-serif !important;
+        color: var(--text-primary) !important;
+        letter-spacing: -0.5px !important;
+    }
+    
+    h3 {
+        font-size: 1.5rem !important;
+        font-weight: 600 !important;
+        margin-bottom: 1.5rem !important;
+        background: var(--gradient-cyan) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        position: relative !important;
+        padding-bottom: 0.5rem !important;
+    }
+    
+    h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 2px;
+        background: var(--gradient-cyan);
+        border-radius: 2px;
+    }
+    
+    /* Slider - Neon Experimental */
+    .stSlider {
+        padding: 1rem 0 !important;
+    }
+    
+    .stSlider>div>div>div {
+        background: var(--bg-glass) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 10px !important;
+        padding: 0.5rem !important;
+    }
+    
+    .stSlider>div>div>div>div {
+        background: var(--gradient-cyan) !important;
+        box-shadow: var(--glow-cyan) !important;
+    }
+    
+    .stSlider>div>div>div>div>div {
+        background: var(--neon-cyan) !important;
+        box-shadow: 0 0 15px rgba(0, 245, 255, 0.8) !important;
+        border: 2px solid var(--text-primary) !important;
+    }
+    
+    /* Metrics - Glass Cards */
+    [data-testid="stMetricValue"] {
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-size: 2rem !important;
+        font-weight: 600 !important;
+        background: var(--gradient-cyan) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+    }
+    
+    [data-testid="stMetricLabel"] {
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.875rem !important;
+        color: var(--text-secondary) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+    }
+    
+    [data-testid="stMetricDelta"] {
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* Expander - Glass */
+    [data-testid="stExpander"] {
+        background: var(--bg-glass) !important;
+        backdrop-filter: blur(20px) !important;
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 12px !important;
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+        box-shadow: var(--shadow-float) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    [data-testid="stExpander"]:hover {
+        border-color: var(--border-neon) !important;
+        box-shadow: var(--glow-soft) !important;
+    }
+    
+    [data-testid="stExpander"] summary {
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 0.9375rem !important;
+        padding: 0.5rem 0 !important;
+    }
+    
+    [data-testid="stExpander"] summary:hover {
+        color: var(--neon-cyan) !important;
+    }
+    
+    /* Caption - Subtle */
+    .stCaption {
+        color: var(--text-muted) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.8125rem !important;
+        font-style: italic !important;
+    }
+    
+    /* Download Button - Neon */
+    .stDownloadButton>button {
+        background: transparent !important;
+        border: 1px solid var(--border-neon) !important;
+        border-radius: 10px !important;
+        color: var(--neon-cyan) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 0.9375rem !important;
+        padding: 0.875rem 2rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        backdrop-filter: blur(10px) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .stDownloadButton>button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--gradient-cyan);
+        opacity: 0.1;
+        transition: left 0.5s ease;
+    }
+    
+    .stDownloadButton>button:hover {
+        background: var(--bg-hover) !important;
+        border-color: var(--neon-cyan) !important;
+        color: var(--text-primary) !important;
+        box-shadow: var(--glow-cyan) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .stDownloadButton>button:hover::before {
+        left: 100%;
+    }
+    
+    /* Divider - Enhanced */
+    hr {
+        border: none !important;
+        height: 1px !important;
+        background: var(--border-subtle) !important;
+        margin: 2rem 0 !important;
+        position: relative !important;
+    }
+    
+    hr::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100px;
+        height: 1px;
+        background: var(--gradient-cyan);
+        opacity: 0.5;
+    }
+    
+    /* Labels - Neon */
+    label {
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 0.9375rem !important;
+        letter-spacing: 0.3px !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Help text */
+    [data-testid="stTooltipIcon"] {
+        color: var(--text-muted) !important;
+    }
+    
+    [data-testid="stTooltipIcon"]:hover {
+        color: var(--neon-cyan) !important;
+    }
+    
+    /* Column containers - Better spacing */
+    [data-testid="column"] {
+        padding: 0 0.5rem !important;
+    }
+    
+    /* Markdown text styling */
+    .stMarkdown p {
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.9375rem !important;
+        line-height: 1.7 !important;
+    }
+    
+    .stMarkdown strong {
+        color: var(--neon-cyan) !important;
+        font-weight: 600 !important;
+    }
+    
+    .stMarkdown code {
+        background: var(--bg-card) !important;
+        color: var(--neon-cyan) !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 4px !important;
+        font-family: 'Space Grotesk', monospace !important;
+        font-size: 0.875rem !important;
+        border: 1px solid var(--border-subtle) !important;
+    }
+    
+    .stMarkdown ul, .stMarkdown ol {
+        color: var(--text-primary) !important;
+        font-family: 'Inter', sans-serif !important;
+        padding-left: 1.5rem !important;
+    }
+    
+    .stMarkdown li {
+        margin-bottom: 0.5rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    /* Empty state messages */
+    .stInfo, .stWarning, .stSuccess, .stError {
+        margin-top: 1rem !important;
+        margin-bottom: 1rem !important;
     }
     
     /* Hide Streamlit branding */
@@ -1191,10 +1779,10 @@ with tab_intro:
             </span>
         </div>
         <div style="font-size: 1.25rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;">
-            Phân tích cảm xúc cho Comments TikTok
+            Phân tích cảm xúc cho Comments 
         </div>
         <div style="font-size: 1rem; color: rgba(255, 255, 255, 0.6); line-height: 1.8; max-width: 700px; margin-left: auto; margin-right: auto; margin-bottom: 3rem;">
-            Một công cụ phân tích sentiment toàn diện sử dụng AI để đánh giá cảm xúc của comments TikTok. 
+            Một công cụ phân tích sentiment toàn diện sử dụng AI để đánh giá cảm xúc của comments . 
             Nhanh chóng, chính xác và dễ sử dụng với các model transformer hiện đại.
         </div>
     </div>
@@ -1212,7 +1800,7 @@ with tab_intro:
                     <div style="background: linear-gradient(135deg, #00f5ff, #00ff88); border-radius: 50%; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">1</div>
                     <div>
                         <div style="font-weight: 600; margin-bottom: 0.5rem;">Upload file CSV</div>
-                        <div style="color: rgba(255, 255, 255, 0.6);">Chọn file CSV có cột 'text' chứa comments TikTok</div>
+                        <div style="color: rgba(255, 255, 255, 0.6);">Chọn file CSV có cột 'text' chứa comments </div>
                     </div>
                 </div>
             </div>
@@ -1490,13 +2078,39 @@ with tab2:
             
             col1, col2, col3, col4 = st.columns(4)
             with col1:
-                st.metric("Tổng số", total)
+                st.markdown(f"""
+                <div class="stat-card">
+                    <div class="label">Tổng số</div>
+                    <div class="value">{total:,}</div>
+                </div>
+                """, unsafe_allow_html=True)
             with col2:
-                st.metric("Tích cực", positive, f"{positive/total*100:.1f}%")
+                pct = positive/total*100
+                st.markdown(f"""
+                <div class="stat-card" style="border-top: 2px solid var(--neon-lime);">
+                    <div class="label">Tích cực</div>
+                    <div class="value" style="background: var(--gradient-success); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{positive:,}</div>
+                    <div class="sub-value">{pct:.1f}%</div>
+                </div>
+                """, unsafe_allow_html=True)
             with col3:
-                st.metric("Trung tính", neutral, f"{neutral/total*100:.1f}%")
+                pct = neutral/total*100
+                st.markdown(f"""
+                <div class="stat-card" style="border-top: 2px solid var(--text-muted);">
+                    <div class="label">Trung tính</div>
+                    <div class="value" style="color: var(--text-muted);">{neutral:,}</div>
+                    <div class="sub-value">{pct:.1f}%</div>
+                </div>
+                """, unsafe_allow_html=True)
             with col4:
-                st.metric("Tiêu cực", negative, f"{negative/total*100:.1f}%")
+                pct = negative/total*100
+                st.markdown(f"""
+                <div class="stat-card" style="border-top: 2px solid var(--neon-pink);">
+                    <div class="label">Tiêu cực</div>
+                    <div class="value" style="background: var(--gradient-danger); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">{negative:,}</div>
+                    <div class="sub-value">{pct:.1f}%</div>
+                </div>
+                """, unsafe_allow_html=True)
             
             st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
             
