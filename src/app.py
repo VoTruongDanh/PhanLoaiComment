@@ -1743,12 +1743,16 @@ if 'results_df' not in st.session_state:
     st.session_state.results_df = None
 if 'model_choice' not in st.session_state:
     st.session_state.model_choice = "nlptown/bert-base-multilingual-uncased-sentiment"
+if 'use_gemini' not in st.session_state:
+    st.session_state.use_gemini = False
+if 'gemini_api_key' not in st.session_state:
+    st.session_state.gemini_api_key = ""
 if 'batch_size' not in st.session_state:
     st.session_state.batch_size = 32
 if 'text_column' not in st.session_state:
     st.session_state.text_column = 'text'
-if 'trust_column' not in st.session_state:
-    st.session_state.trust_column = 'trust'
+if 'sentiment_column' not in st.session_state:
+    st.session_state.sentiment_column = 'sentiment'
 if 'current_tab' not in st.session_state:
     st.session_state.current_tab = 'Introduction'
 
@@ -1867,6 +1871,10 @@ with tab1:
             try:
                 df = pd.read_csv(uploaded_file)
                 
+                # Tự động thêm cột 'sentiment' nếu chưa có (thêm vào cuối)
+                if 'sentiment' not in df.columns:
+                    df['sentiment'] = None
+                
                 # File Info - Floating Cards
                 st.markdown(f"""
                 <div class="stat-card">
@@ -1913,7 +1921,21 @@ with tab1:
                         
                         try:
                             status_text.text("Đang khởi tạo model...")
-                            analyzer = SentimentAnalyzer(model_name=st.session_state.model_choice)
+                            # Kiểm tra nếu dùng Gemini
+                            use_gemini = st.session_state.use_gemini
+                            gemini_key = st.session_state.gemini_api_key.strip() if use_gemini else None
+                            
+                            if use_gemini and not gemini_key:
+                                st.error("⚠️ Vui lòng nhập Gemini API key trong tab Settings!")
+                                progress_bar.empty()
+                                status_text.empty()
+                                st.stop()
+                            
+                            analyzer = SentimentAnalyzer(
+                                model_name='gemini-2.5-flash' if use_gemini else st.session_state.model_choice,
+                                use_gemini=use_gemini,
+                                gemini_api_key=gemini_key
+                            )
                             st.session_state.analyzer = analyzer
                             progress_bar.progress(20)
                             
@@ -1929,7 +1951,7 @@ with tab1:
                             results_df = analyzer.process_csv_dataframe(
                                 df.copy(),
                                 text_column=st.session_state.text_column,
-                                trust_column=st.session_state.trust_column,
+                                trust_column=st.session_state.sentiment_column,
                                 batch_size=st.session_state.batch_size
                             )
                             
@@ -1957,12 +1979,12 @@ with tab1:
         if st.session_state.results_df is not None:
             df = st.session_state.results_df
             
-            if 'trust' in df.columns:
+            if 'sentiment' in df.columns:
                 # Stats - Floating Cards
                 total = len(df)
-                positive = (df['trust'] == 1).sum()
-                neutral = (df['trust'] == 0).sum()
-                negative = (df['trust'] == -1).sum()
+                positive = (df['sentiment'] == 1).sum()
+                neutral = (df['sentiment'] == 0).sum()
+                negative = (df['sentiment'] == -1).sum()
                 
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
@@ -2003,10 +2025,10 @@ with tab1:
                 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
                 
                 # Data Table
-                display_cols = ['text', 'trust']
-                other_cols = [col for col in df.columns if col not in ['text', 'trust']]
+                display_cols = ['text', 'sentiment']
+                other_cols = [col for col in df.columns if col not in ['text', 'sentiment']]
                 if other_cols:
-                    display_cols = ['text'] + other_cols[:3] + ['trust']
+                    display_cols = ['text'] + other_cols[:3] + ['sentiment']
                 
                 st.dataframe(
                     df[display_cols] if all(col in df.columns for col in display_cols) else df,
@@ -2046,11 +2068,11 @@ with tab1:
                         filtered_df = filtered_df[filtered_df['text'].str.contains(search_text, case=False, na=False)]
                     
                     if filter_sentiment == "Tích cực (1)":
-                        filtered_df = filtered_df[filtered_df['trust'] == 1]
+                        filtered_df = filtered_df[filtered_df['sentiment'] == 1]
                     elif filter_sentiment == "Trung tính (0)":
-                        filtered_df = filtered_df[filtered_df['trust'] == 0]
+                        filtered_df = filtered_df[filtered_df['sentiment'] == 0]
                     elif filter_sentiment == "Tiêu cực (-1)":
-                        filtered_df = filtered_df[filtered_df['trust'] == -1]
+                        filtered_df = filtered_df[filtered_df['sentiment'] == -1]
                     
                     st.caption(f"Kết quả: {len(filtered_df)} dòng")
                     st.dataframe(
@@ -2059,7 +2081,7 @@ with tab1:
                         height=300
                     )
             else:
-                st.warning("Chưa có cột 'trust' trong kết quả")
+                st.warning("Chưa có cột 'sentiment' trong kết quả")
         else:
             st.info("Vui lòng upload file và chạy phân tích")
 
@@ -2069,12 +2091,12 @@ with tab2:
     if st.session_state.results_df is not None:
         df = st.session_state.results_df
         
-        if 'trust' in df.columns:
+        if 'sentiment' in df.columns:
             # Stats
             total = len(df)
-            positive = (df['trust'] == 1).sum()
-            neutral = (df['trust'] == 0).sum()
-            negative = (df['trust'] == -1).sum()
+            positive = (df['sentiment'] == 1).sum()
+            neutral = (df['sentiment'] == 0).sum()
+            negative = (df['sentiment'] == -1).sum()
             
             col1, col2, col3, col4 = st.columns(4)
             with col1:
@@ -2185,7 +2207,7 @@ with tab2:
             
             with col1:
                 st.markdown("**Ví dụ Comments Tích Cực**")
-                positive_examples = df[df['trust'] == 1]['text'].head(5).tolist()
+                positive_examples = df[df['sentiment'] == 1]['text'].head(5).tolist()
                 if positive_examples:
                     for i, text in enumerate(positive_examples, 1):
                         st.markdown(f"""
@@ -2196,7 +2218,7 @@ with tab2:
             
             with col2:
                 st.markdown("**Ví dụ Comments Tiêu Cực**")
-                negative_examples = df[df['trust'] == -1]['text'].head(5).tolist()
+                negative_examples = df[df['sentiment'] == -1]['text'].head(5).tolist()
                 if negative_examples:
                     for i, text in enumerate(negative_examples, 1):
                         st.markdown(f"""
@@ -2205,7 +2227,7 @@ with tab2:
                         </div>
                         """, unsafe_allow_html=True)
         else:
-            st.warning("Chưa có cột 'trust' trong kết quả")
+            st.warning("Chưa có cột 'sentiment' trong kết quả")
     else:
         st.info("Vui lòng upload file và chạy phân tích ở tab **Upload & Results**")
 
@@ -2224,9 +2246,9 @@ with tab3:
         )
     
     with col2:
-        st.session_state.trust_column = st.text_input(
-            "Tên cột trust (kết quả)",
-            value=st.session_state.trust_column,
+        st.session_state.sentiment_column = st.text_input(
+            "Tên cột sentiment (kết quả)",
+            value=st.session_state.sentiment_column,
             help="Tên cột sẽ chứa kết quả sentiment (1, 0, -1)"
         )
     
@@ -2234,26 +2256,56 @@ with tab3:
     
     st.markdown("### Cài Đặt Model")
     
-    col1, col2 = st.columns(2)
+    # Chọn loại model
+    st.session_state.use_gemini = st.checkbox(
+        "✨ Sử dụng Gemini 2.5 Flash (Chính xác hơn, cần API key)",
+        value=st.session_state.use_gemini,
+        help="Gemini 2.5 Flash có độ chính xác cao hơn, đặc biệt với tiếng Việt và sarcasm"
+    )
     
-    with col1:
-        st.session_state.model_choice = st.selectbox(
-            "Model Phân Tích",
-            ["nlptown/bert-base-multilingual-uncased-sentiment", 
-             "cardiffnlp/twitter-roberta-base-sentiment-latest"],
-            index=0 if st.session_state.model_choice == "nlptown/bert-base-multilingual-uncased-sentiment" else 1,
-            help="Model đa ngôn ngữ hỗ trợ tốt hơn cho tiếng Việt"
+    if st.session_state.use_gemini:
+        st.session_state.gemini_api_key = st.text_input(
+            "🔑 Gemini API Key",
+            value=st.session_state.gemini_api_key,
+            type="password",
+            help="Nhập API key từ Google AI Studio (https://aistudio.google.com/apikey)",
+            placeholder="Nhập API key của bạn..."
         )
         
-        st.info("""
-        **nlptown/bert-base-multilingual-uncased-sentiment:**
-        - Chính xác hơn, hỗ trợ đa ngôn ngữ tốt
-        - Chậm hơn, tốn RAM hơn
+        if st.session_state.gemini_api_key:
+            st.success("✅ API key đã được nhập")
+        else:
+            st.warning("⚠️ Vui lòng nhập Gemini API key để sử dụng")
         
-        **cardiffnlp/twitter-roberta-base-sentiment-latest:**
-        - Nhanh hơn, nhẹ hơn
-        - Hỗ trợ đa ngôn ngữ cơ bản
+        st.info("""
+        **✨ Gemini 2.5 Flash:**
+        - ✅ Độ chính xác cao nhất, đặc biệt với tiếng Việt
+        - ✅ Hiểu sarcasm, irony, context tốt hơn
+        - ✅ Xử lý comments dài và phức tạp
+        - ⚠️ Cần API key (miễn phí từ Google AI Studio)
+        - ⚠️ Chậm hơn một chút do API call
         """)
+    else:
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.session_state.model_choice = st.selectbox(
+                "Model Phân Tích",
+                ["nlptown/bert-base-multilingual-uncased-sentiment", 
+                 "cardiffnlp/twitter-roberta-base-sentiment-latest"],
+                index=0 if st.session_state.model_choice == "nlptown/bert-base-multilingual-uncased-sentiment" else 1,
+                help="Model đa ngôn ngữ hỗ trợ tốt hơn cho tiếng Việt"
+            )
+            
+            st.info("""
+            **nlptown/bert-base-multilingual-uncased-sentiment:**
+            - Chính xác hơn, hỗ trợ đa ngôn ngữ tốt
+            - Chậm hơn, tốn RAM hơn
+            
+            **cardiffnlp/twitter-roberta-base-sentiment-latest:**
+            - Nhanh hơn, nhẹ hơn
+            - Hỗ trợ đa ngôn ngữ cơ bản
+            """)
     
     with col2:
         st.session_state.batch_size = st.slider(
@@ -2306,7 +2358,7 @@ with tab3:
         - **-1** = Tiêu cực (Negative)
         
         **Xử lý:**
-        - Tự động bỏ qua các dòng đã có trust score
+        - Tự động bỏ qua các dòng đã có sentiment score
         - Chỉ phân tích các dòng chưa có giá trị
         - Hỗ trợ resume nếu bị gián đoạn
         """)
